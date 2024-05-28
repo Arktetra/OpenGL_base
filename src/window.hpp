@@ -1,7 +1,7 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
-#include "./includes/GLFW/glfw3.h"
+#include "./utils.hpp"
 
 #include <iostream>
 

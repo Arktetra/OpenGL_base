@@ -1,5 +1,3 @@
-#include "./includes/GLAD/glad.h"
-
 #include <iostream>
 
 #include "./window.hpp"
@@ -19,6 +17,9 @@ int main() {
         return -1;
     }
 
+    // Make sure GLAD is initialized.
+    Debug::init();
+
     while (!glfwWindowShouldClose(window)) {
         process_input(window);
 
@@ -26,7 +27,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         glfwSwapBuffers(window);
-        // glfwPollEvents();
+        glfwPollEvents();
     }
 
     glfwTerminate();
