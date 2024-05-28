@@ -2,7 +2,8 @@
 #define SHADER_H
 
 #include "./includes/GLAD/glad.h"
-
+#include "./includes/glm/glm.hpp"
+#include "./includes/glm/gtc/type_ptr.hpp"
 
 #include <string>
 #include <fstream>
@@ -25,6 +26,7 @@ class Shader {
         void set_int(const std::string &name, int value) const;
         void set_uint(const std::string &name, int value) const;
         void set_float(const std::string &name, float value) const;
+        void set_mat4(const std::string &name, glm::mat4 &mat) const;
 };
 
 #endif

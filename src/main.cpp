@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 
+#include "./includes/glm/gtc/matrix_transform.hpp"
+
 #include "./window.hpp"
 #include "./shader.hpp"
 #include "./buffer.hpp"
@@ -51,6 +53,19 @@ int main() {
 
         tex.bind();
         shader.use();
+
+        // create transformations
+        glm::mat4 model         = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        glm::mat4 view          = glm::mat4(1.0f);
+        glm::mat4 projection    = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        
+        shader.set_mat4("model", model);
+        shader.set_mat4("view", view);
+        shader.set_mat4("projection", projection);
+
         buffer.bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
