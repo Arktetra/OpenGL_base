@@ -4,6 +4,7 @@
 #include "./window.hpp"
 #include "./shader.hpp"
 #include "./buffer.hpp"
+#include "./texture.hpp"
 
 void framebuffer_size_callback(int width, int height);
 void process_input(GLFWwindow* window);
@@ -27,11 +28,11 @@ int main() {
 
     std::vector<float> vertices = {
         // positions         // colors
-        0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
-        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
-        0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   // top 
-        -0.5f, 0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
-    };
+        0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,  // bottom left
+        0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,   // top 
+        -0.5f, 0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f
+    };  
 
     std::vector<int> indices {
         0, 1, 2,
@@ -39,10 +40,8 @@ int main() {
     };
 
     Buffer buffer(vertices, indices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
+    config_vertex_attribute();
+    Texture tex("./assets/imgs/clouds.jpg");
 
     while (!glfwWindowShouldClose(window)) {
         process_input(window);
@@ -50,6 +49,7 @@ int main() {
         glClearColor(0.2, 0.3, 0.3, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        tex.bind();
         shader.use();
         buffer.bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -57,6 +57,7 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    shader.remove();
 
     glfwTerminate();
     return 0;
