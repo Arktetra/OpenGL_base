@@ -36,8 +36,20 @@ void Window::make_context_current() {
     glfwMakeContextCurrent(this->ptr);
 }
 
-bool Window::close() {
+bool Window::is_pressed(Key key) {
+    if (glfwGetKey(this->ptr, key) == GLFW_PRESS) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool Window::is_close() {
     return glfwWindowShouldClose(this->ptr);
+}
+
+void Window::close() {
+    glfwSetWindowShouldClose(this->ptr, true);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {

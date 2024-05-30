@@ -8,7 +8,7 @@
 #include "platform/buffer.hpp"
 #include "platform/texture.hpp"
 
-void process_input(GLFWwindow* window);
+void process_input(Window window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
 glm::vec3 camera_pos = glm::vec3(0.0, 0.0, 3.0);    // a vector in world space that points to the camera's position
@@ -49,8 +49,8 @@ int main() {
     ProcGen::config_vertex_attribute();
     Texture tex("./assets/imgs/clouds.jpg");
 
-    while (!window.close()) {
-        process_input(window.ptr);
+    while (!window.is_close()) {
+        process_input(window);
 
         float current_frame = static_cast<float>(glfwGetTime());
         delta_time = current_frame - last_frame;
@@ -87,22 +87,16 @@ int main() {
     return 0;
 }
 
-void process_input(GLFWwindow* window) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, true);
-    }
+void process_input(Window window) {
+    if (window.is_pressed(Key::ESC) == true) { window.close(); }
 
     float camera_speed = static_cast<float>(2.5 * delta_time);
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+    if (window.is_pressed(Key::FRONT))
         camera_pos += camera_speed * camera_front;
-    }
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+    if (window.is_pressed(Key::BACK))
         camera_pos -= camera_speed * camera_front;
-    }
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+    if (window.is_pressed(Key::LEFT))
         camera_pos -= glm::normalize(glm::cross(camera_front, camera_up)) * camera_speed;
-    }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+    if (window.is_pressed(Key::RIGHT))
         camera_pos += glm::normalize(glm::cross(camera_front, camera_up)) * camera_speed;
-    }
 }

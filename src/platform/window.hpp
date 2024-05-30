@@ -2,6 +2,7 @@
 #define WINDOW_HPP
 
 #include "./utils.hpp"
+#include "input.hpp"
 
 #include <iostream>
 
@@ -21,7 +22,9 @@ class Window {
     GLFWwindow* ptr;
     Window(WinParams winparam);
     void make_context_current();
-    bool close();
+    bool is_pressed(Key key);
+    bool is_close();
+    void close();
 };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
