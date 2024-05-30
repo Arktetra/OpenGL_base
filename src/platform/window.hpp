@@ -7,13 +7,23 @@
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-const char* TITLED = "ProcGen";
+
+struct WinParams {
+    int width = 800;
+    int height = 600;
+    const char* title = "ProcGen";
+    bool context = false;
+};
 
 class Window {
 
     public: 
     GLFWwindow* ptr;
-    Window(int width = SCR_WIDTH, int height = SCR_HEIGHT, const char* title = "ProcGen");
+    Window(WinParams winparam);
+    void make_context_current();
+    bool close();
 };
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 #endif

@@ -21,6 +21,7 @@ namespace Debug {
 };
 
 namespace ProcGen {
+    void init();
     void config_vertex_attribute(int attrib_pointer, int size, int stride, void* offset);
     void config_vertex_attribute(
         int pos_attrib_pointer = 0,
@@ -34,6 +35,6 @@ namespace ProcGen {
         void* col_offset = (void*)(3 * sizeof(float)),
         void* tex_offset = (void*)(6 * sizeof(float))
     );
-}
+};
 
 #endif

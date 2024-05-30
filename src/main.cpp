@@ -8,7 +8,6 @@
 #include "platform/buffer.hpp"
 #include "platform/texture.hpp"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void process_input(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
@@ -27,21 +26,9 @@ float delta_time = 0.0f;
 float last_frame = 0.0f;
 
 int main() {
-    Window window = Window();
-
-    glfwSetFramebufferSizeCallback(window.ptr, framebuffer_size_callback);
-
-    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    glfwMakeContextCurrent(window.ptr);
-
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }
-
-    // Make sure GLAD is initialized.
-    Debug::init();
+    Window window = Window({.context = true});
+    
+    ProcGen::init();
 
     Shader shader("./src/shaders/triangle.vert", "./src/shaders/triangle.frag");
 
@@ -62,7 +49,7 @@ int main() {
     ProcGen::config_vertex_attribute();
     Texture tex("./assets/imgs/clouds.jpg");
 
-    while (!glfwWindowShouldClose(window.ptr)) {
+    while (!window.close()) {
         process_input(window.ptr);
 
         float current_frame = static_cast<float>(glfwGetTime());
@@ -98,10 +85,6 @@ int main() {
 
     glfwTerminate();
     return 0;
-}
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
 }
 
 void process_input(GLFWwindow* window) {

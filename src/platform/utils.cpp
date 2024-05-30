@@ -148,3 +148,14 @@ void ProcGen::config_vertex_attribute(
     ProcGen::config_vertex_attribute(col_attrib_pointer, col_size, stride, col_offset);
     ProcGen::config_vertex_attribute(tex_attrib_pointer, tex_size, stride, tex_offset);
 }
+
+void ProcGen::init() {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        exit(0);
+    }
+
+    // Make sure that glad is initialized before initialzing Debug
+    Debug::init();
+}
+
