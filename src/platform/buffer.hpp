@@ -1,7 +1,7 @@
 #ifndef BUFFER_HPP
 #define BUFFER_HPP
 
-#include "./includes/GLAD/glad.h"
+#include "../includes/GLAD/glad.h"
 
 #include <vector>
 

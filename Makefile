@@ -14,12 +14,18 @@ CFLAGS = -std=c++11 -Wall -Wextra -g $(foreach D, $(INCDIRS), -I$(D)) $(OPT) $(D
 APPNAME = app 
 EXT = .cpp
 SRCDIR = src
+PFDIR = src/platform
 BUILDDIR = build
 DEPDIR = dep
 
 SRCFILES = $(wildcard $(SRCDIR)/*.cpp)
 OBJECTS = $(patsubst $(SRCDIR)/%.cpp, $(BUILDDIR)/%.obj, $(SRCFILES))
+
+# for dir in
+PFFILES = $(wildcard $(PFDIR)/*.cpp)
+OBJECTS += $(patsubst $(PFDIR)/%.cpp, $(BUILDDIR)/%.obj, $(PFFILES))
 DEPFILES = $(patsubst $(SRCDIR)/%.cpp, $(DEPDIR)/%.d, $(SRCFILES))
+DEPFILES += $(patsubst $(PFDIR)/%.cpp, $(DEPDIR)/%.d, $(PFFILES))
 
 all: $(APPNAME)
 
@@ -28,8 +34,11 @@ $(APPNAME): $(OBJECTS)
 
 -include $(DEPFILES)
 
-$(BUILDDIR)/%.obj: $(SRCDIR)/%.cpp Makefile
+$(BUILDDIR)/%.obj: $(PFDIR)/%.cpp Makefile
 	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/%.obj: $(SRCDIR)/%.cpp Makefile
+	$(CC) $(FLAGS) -c -o $@ $<
 
 debug:
 	$(warning SRCFILES = $(SRCFILES))
@@ -38,3 +47,9 @@ debug:
 clean:
 	rm $(BUILDDIR)/*.obj
 	rm $(DEPDIR)/*.d
+
+print:
+	$(warning SRCFILES = $(SRCFILES))
+	$(warning OBJECTS = $(OBJECTS))
+	$(warning PFFILES = $(PFFILES))
+	$(warning PFOBJECTS = $(PFOBJECTS))

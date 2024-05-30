@@ -108,7 +108,7 @@ void Debug::output(
  * 
  * @overload
  */
-void config_vertex_attribute(
+void ProcGen::config_vertex_attribute(
     int attrib_pointer,
     int size,
     int stride,
@@ -132,7 +132,7 @@ void config_vertex_attribute(
  * @param col_offset 
  * @param tex_offset 
  */
-void config_vertex_attribute(
+void ProcGen::config_vertex_attribute(
     int pos_attrib_pointer,
     int col_attrib_pointer,
     int tex_attrib_pointer,
@@ -144,7 +144,7 @@ void config_vertex_attribute(
     void* col_offset,
     void* tex_offset
 ) {
-    config_vertex_attribute(pos_attrib_pointer, pos_size, stride, pos_offset);
-    config_vertex_attribute(col_attrib_pointer, col_size, stride, col_offset);
-    config_vertex_attribute(tex_attrib_pointer, tex_size, stride, tex_offset);
+    ProcGen::config_vertex_attribute(pos_attrib_pointer, pos_size, stride, pos_offset);
+    ProcGen::config_vertex_attribute(col_attrib_pointer, col_size, stride, col_offset);
+    ProcGen::config_vertex_attribute(tex_attrib_pointer, tex_size, stride, tex_offset);
 }

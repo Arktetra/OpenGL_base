@@ -1,7 +1,7 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
-#include "./includes/GLAD/glad.h"
+#include "../includes/GLAD/glad.h"
 
 #include <iostream>
 
