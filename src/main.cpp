@@ -7,20 +7,15 @@
 #include "platform/shader.hpp"
 #include "platform/buffer.hpp"
 #include "platform/texture.hpp"
+#include "platform/camera.hpp"
 
 void process_input(Window window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
-glm::vec3 camera_pos = glm::vec3(0.0, 0.0, 3.0);    // a vector in world space that points to the camera's position
-glm::vec3 camera_front = glm::vec3(0.0, 0.0, -1.0); // camera direction vector
-glm::vec3 camera_up = glm::vec3(0.0, 1.0, 0.0);     //  camera's positive y-axis
+Camera camera = Camera({});
 
-bool first_mouse = true;
-float yaw = -90.0;
-float pitch = 0.0;
-float last_x = 800.0 / 2.0;
-float last_y = 600.0 / 2.0;
-float fov = 45.0f;
+float last_x;
+float last_y;
 
 float delta_time = 0.0f;
 float last_frame = 0.0f;
@@ -68,7 +63,7 @@ int main() {
         glm::mat4 projection    = glm::mat4(1.0f);
         model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         // view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-        view = glm::lookAt(camera_pos, camera_front + camera_pos, camera_up);
+        view = glm::lookAt(camera.pos, camera.front + camera.pos, camera.up);
         projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         
         shader.set_mat4("model", model);
@@ -92,11 +87,31 @@ void process_input(Window window) {
 
     float camera_speed = static_cast<float>(2.5 * delta_time);
     if (window.is_pressed(Key::FRONT))
-        camera_pos += camera_speed * camera_front;
+        camera.pos += camera_speed * camera.front;
     if (window.is_pressed(Key::BACK))
-        camera_pos -= camera_speed * camera_front;
+        camera.pos -= camera_speed * camera.front;
     if (window.is_pressed(Key::LEFT))
-        camera_pos -= glm::normalize(glm::cross(camera_front, camera_up)) * camera_speed;
+        camera.pos -= glm::normalize(glm::cross(camera.front, camera.up)) * camera_speed;
     if (window.is_pressed(Key::RIGHT))
-        camera_pos += glm::normalize(glm::cross(camera_front, camera_up)) * camera_speed;
+        camera.pos += glm::normalize(glm::cross(camera.front, camera.up)) * camera_speed;
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    if (camera.first_mouse) {
+        last_x = xpos; last_y = ypos;
+        camera.first_mouse = false;
+    }
+
+    float xoffset = xpos - last_x;
+    float yoffset = last_y - ypos;
+    last_x = xpos; last_y = ypos;
+
+    camera.yaw += xoffset * camera.sensitivity;
+    camera.pitch += yoffset * camera.sensitivity;
+
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+    direction.y = sin(glm::radians(camera.pitch));
+    direction.z = cos(glm::radians(camera.yaw)) * sin(glm::radians(camera.pitch));
+    camera.front = glm::normalize(direction);
 }

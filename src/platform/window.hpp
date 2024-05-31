@@ -14,6 +14,7 @@ struct WinParams {
     int height = 600;
     const char* title = "ProcGen";
     bool context = false;
+    bool disable_cursor = false;
 };
 
 class Window {
