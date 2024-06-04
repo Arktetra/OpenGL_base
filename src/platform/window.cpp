@@ -29,6 +29,10 @@ Window::Window(WinParams winparam) {
 
     if (winparam.context == true) {
         make_context_current();
+        
+        if (winparam.disable_cursor == true) {
+            glfwSetInputMode(this->ptr, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
     }
 } 
 

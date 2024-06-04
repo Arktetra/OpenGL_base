@@ -21,8 +21,9 @@ float delta_time = 0.0f;
 float last_frame = 0.0f;
 
 int main() {
-    Window window = Window({.context = true});
-    
+    Window window = Window({.context = true, .disable_cursor = true});
+    glfwSetCursorPosCallback(window.ptr, mouse_callback);
+
     ProcGen::init();
 
     Shader shader("./src/shaders/triangle.vert", "./src/shaders/triangle.frag");
@@ -85,15 +86,14 @@ int main() {
 void process_input(Window window) {
     if (window.is_pressed(Key::ESC) == true) { window.close(); }
 
-    float camera_speed = static_cast<float>(2.5 * delta_time);
-    if (window.is_pressed(Key::FRONT))
-        camera.pos += camera_speed * camera.front;
-    if (window.is_pressed(Key::BACK))
-        camera.pos -= camera_speed * camera.front;
-    if (window.is_pressed(Key::LEFT))
-        camera.pos -= glm::normalize(glm::cross(camera.front, camera.up)) * camera_speed;
-    if (window.is_pressed(Key::RIGHT))
-        camera.pos += glm::normalize(glm::cross(camera.front, camera.up)) * camera_speed;
+    if (window.is_pressed(Key::W))
+        camera.process_keyboard(CameraMovement::FORWARD, delta_time);
+    if (window.is_pressed(Key::S))
+        camera.process_keyboard(CameraMovement::BACKWARD, delta_time);
+    if (window.is_pressed(Key::A))
+        camera.process_keyboard(CameraMovement::LEFT, delta_time);
+    if (window.is_pressed(Key::D))
+        camera.process_keyboard(CameraMovement::RIGHT, delta_time);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -104,14 +104,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
     float xoffset = xpos - last_x;
     float yoffset = last_y - ypos;
-    last_x = xpos; last_y = ypos;
 
-    camera.yaw += xoffset * camera.sensitivity;
-    camera.pitch += yoffset * camera.sensitivity;
+    last_x = xpos;
+    last_y = ypos;
 
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
-    direction.y = sin(glm::radians(camera.pitch));
-    direction.z = cos(glm::radians(camera.yaw)) * sin(glm::radians(camera.pitch));
-    camera.front = glm::normalize(direction);
+    camera.process_mouse_movement(xoffset, yoffset);
+    
 }

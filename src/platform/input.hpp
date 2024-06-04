@@ -4,10 +4,10 @@
 #include "camera.hpp"
 
 enum Key {
-    FRONT = 87,
-    BACK = 83,
-    LEFT = 65,
-    RIGHT = 68,
+    W = 87,
+    S = 83,
+    A = 65,
+    D = 68,
     ESC = 256
 };
 
