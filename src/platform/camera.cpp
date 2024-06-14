@@ -35,10 +35,10 @@ void Camera::process_mouse_movement(float xoffset, float yoffset) {
     this->pitch += yoffset;
 
     if (this->pitch > 89.0f) {
-        pitch = 89.0f;
+        this->pitch = 89.0f;
     }
-    if (pitch < 0.0f) {
-        pitch = 0.0f;
+    if (this->pitch < -89.0f) {
+        this->pitch = -89.0f;
     }
 
     update_camera_vectors();
