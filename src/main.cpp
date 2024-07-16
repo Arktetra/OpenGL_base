@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "./includes/glm/gtc/matrix_transform.hpp"
+#include "includes/stb_image.h"
 
 #include "platform/window.hpp"
 #include "platform/shader.hpp"
@@ -11,8 +12,19 @@
 
 void process_input(Window window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int modifiers);
 
-Camera camera = Camera({});
+// settings
+int use_wireframe = 0;
+int display_grayscale = 0;
+
+// Camera camera = Camera({});
+
+Camera camera = Camera({
+    .pos = glm::vec3(67.0f, 627.5f, 169.9f), 
+    .up = glm::vec3(0.0f, 1.0f, 0.0f),
+    .speed = 128.0f
+});
 
 float last_x;
 float last_y;
@@ -25,134 +37,100 @@ glm::vec3 light_pos(1.2, 1.0, 2.0);
 int main() {
     Window window = Window({.context = true, .disable_cursor = true});
     glfwSetCursorPosCallback(window.ptr, mouse_callback);
+    glfwSetKeyCallback(window.ptr, key_callback);
 
     ProcGen::init();
 
     glEnable(GL_DEPTH_TEST);
 
-    // Shader shader("./src/shaders/triangle.vert", "./src/shaders/triangle.frag");
-    Shader cube_shader("./src/shaders/cube_object.vert", "./src/shaders/cube_object.frag");
-    Shader source_shader("./src/shaders/source.vert", "./src/shaders/source.frag");
+    Shader height_map_shader("src/shaders/height_map.vert", "src/shaders/height_map.frag");
 
-    // std::vector<float> vertices = {
-    //     // positions         // colors
-    //     2.0f, -2.0f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,   // bottom right
-    //     -2.0f, -2.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,  // bottom left
-    //     2.0f,  2.0f, 0.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,   // top 
-    //     -2.0f, 2.0f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f
-    // };  
+    stbi_set_flip_vertically_on_load(true);
+    int width, height, n_channels;
+    unsigned char* data = stbi_load(
+        "assets/imgs/clouds.jpg",
+        &width,
+        &height,
+        &n_channels,
+        0
+    );
 
-    // std::vector<int> indices {
-    //     0, 1, 2,
-    //     1, 2, 3
-    // };
+    if (data) {
+        std::cout << "Height map size: " << height << " x " << width << std::endl;
+    } else {
+        std::cout << "Failed to load texture" << std::endl;
+    }
 
-    std::vector<float> vertices = {
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+    std::vector<float> vertices;
+    float y_scale = 64.0f / 256.0f, y_shift = 16.0f;
 
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            unsigned char* texel = data + (j + width * i) * n_channels;
 
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            unsigned char y = texel[0];
 
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+            vertices.push_back(-height / 2.0f + height * i / (float)height);        // v.z
+            vertices.push_back((int)y * y_scale - y_shift);  // v.y
+            vertices.push_back(-width / 2.0f + width * j / (float)width);         // v.x
+        }
+    }
 
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+    stbi_image_free(data);
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-    };
+    std::vector<int> indices;
 
+    for (int i = 0; i < height - 1; i++) {
+        for (int j = 0; j < width; j++) {
+            for (int k = 0; k < 2; k++) {
+                indices.push_back(j + width * (i + k));
+            }
+        }
+    }
 
-    // Buffer buffer(vertices, indices, GL_STATIC_DRAW);
-    // ProcGen::config_vertex_attribute();
+    const unsigned int NUM_STRIPS = height - 1;
+    const unsigned int NUM_VERTS_PER_STRIP = width * 2;
 
-    Buffer object(vertices, GL_STATIC_DRAW);
-    ProcGen::config_vertex_attribute(0, 3, 6 * sizeof(float), (void*)0);
-    ProcGen::config_vertex_attribute(1, 3, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-
-    Buffer source(vertices, GL_STATIC_DRAW);
-    ProcGen::config_vertex_attribute(0, 3, 6 * sizeof(float), (void*)0);
-    Texture tex("./assets/imgs/clouds.jpg");
+    Buffer terrain(vertices, indices, GL_STATIC_DRAW);
+    ProcGen::config_vertex_attribute(0, 3, 3 * sizeof(float), (void*)0);
 
     while (!window.is_close()) {
         process_input(window);
 
         float current_frame = static_cast<float>(glfwGetTime());
+
         delta_time = current_frame - last_frame;
         last_frame = current_frame;
 
-        glClearColor(0.1, 0.1, 0.1, 1.0);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        light_pos.x = glm::sin(glfwGetTime());
-        light_pos.y = glm::cos(glfwGetTime());
-        light_pos.z = 0;
+        height_map_shader.use();
 
-        // tex.bind();
-        cube_shader.use();
-        cube_shader.set_vec3("object_color", 1.0, 0.5, 0.31);
-        cube_shader.set_vec3("light_color", 1.0f, 1.0f, 1.0f);
-        cube_shader.set_vec3("light_pos", light_pos);
-        cube_shader.set_vec3("view_pos", camera.pos);
-
-        // create transformations
-        // view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 10000.0f);
         glm::mat4 view = glm::lookAt(camera.pos, camera.front + camera.pos, camera.up);
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        glm::mat4 model = glm::mat4(1.0);
+        height_map_shader.set_mat4("projection", projection);
+        height_map_shader.set_mat4("view", view);
 
-        cube_shader.set_mat4("projection", projection);
-        cube_shader.set_mat4("view", view);
-        cube_shader.set_mat4("model", model);
+        glm::mat4 model = glm::mat4(1.0f);
+        height_map_shader.set_mat4("model", model);
 
-        object.bind();
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        
-        source_shader.use();
-        source_shader.set_mat4("projection", projection);
-        source_shader.set_mat4("view", view);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, light_pos);
-        model = glm::scale(model, glm::vec3(0.2));     // smaller cube
-        source_shader.set_mat4("model", model);
+        terrain.bind();
 
-        source.bind();
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        for (unsigned int strip = 0; strip < NUM_STRIPS; strip++) {
+            glDrawElements(
+                GL_TRIANGLE_STRIP,
+                NUM_VERTS_PER_STRIP,
+                GL_UNSIGNED_INT,
+                (void*)(sizeof(unsigned int) * (NUM_VERTS_PER_STRIP) * strip)
+            );
+        }
 
         glfwSwapBuffers(window.ptr);
         glfwPollEvents();
     }
-    cube_shader.remove();
-    source_shader.remove();
+    height_map_shader.remove();
 
     glfwTerminate();
     return 0;
@@ -185,4 +163,19 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
     camera.process_mouse_movement(xoffset, yoffset);
     
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int modifiers) {
+    if (action == GLFW_PRESS) {
+        switch(key) {
+            case GLFW_KEY_SPACE:
+                use_wireframe = 1 - use_wireframe;
+                break;
+            case GLFW_KEY_G:
+                display_grayscale = 1 - display_grayscale;
+                break;
+            default:
+                break;
+        }
+    }
 }
