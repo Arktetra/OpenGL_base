@@ -9,19 +9,36 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <optional>
+
 
 class Shader {
-    unsigned int ID;
-    unsigned int create_vert_shader(const char* vert_shader_code);
-    unsigned int create_frag_shader(const char* frag_shader_code);
-    unsigned int create_shader_program(unsigned int vert, unsigned int frag);
+    unsigned int ID;    // shader program ID
+    unsigned int create_shader(const char* shader_code, std::string shader_type);
+
+    unsigned int create_shader_program(
+        unsigned int vert,  // vertex shader ID
+        unsigned int frag,  // fragment shader ID
+        std::optional<unsigned int> tessc = std::nullopt,   // tessellation control shader ID
+        std::optional<unsigned int> tesse = std::nullopt    // tessellation evaluation shader ID
+    );
+
     void check_compile_errors(unsigned int shader, std::string type);
+    std::string read_shader_code(const char* shader_path);
 
     public:
-        Shader(const char* vert_path, const char* frag_path);
+        // Shader(const char* vert_path, const char* frag_path);
+        Shader(
+            const char* vert_path, 
+            const char* frag_path, 
+            const char* tessel_control_path = nullptr, 
+            const char* tessel_eval_path = nullptr
+        );
+
         void use();
         unsigned int get_id();
         void remove();
+
         void set_bool(const std::string &name, bool value) const;
         void set_int(const std::string &name, int value) const;
         void set_uint(const std::string &name, int value) const;

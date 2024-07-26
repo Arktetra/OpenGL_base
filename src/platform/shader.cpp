@@ -1,110 +1,142 @@
 #include "./shader.hpp"
 
-/// @brief Create a shader program.
-/// @param vert_path path to the vertex shader.
-/// @param frag_path path to the fragment shader.
-
 /**
- * Create a shader program.
+ * @brief Construct a new Shader::Shader object.
  * 
- * # Parameters
- * `vert_path` -  path to the vertex shader.
- * `frag_path` -  path to the fragment shader.
+ * @param vert_path vertex shader path
+ * @param frag_path fragment shader path
+ * @param tessel_control_path tessellation control shader path
+ * @param tessel_eval_path tessellation evaluation shader path
  */
-Shader::Shader(const char* vert_path, const char* frag_path) {
-    std::string vert_code;
-    std::string frag_code;
-    std::ifstream vert_shader_file;
-    std::ifstream frag_shader_file;
+Shader::Shader(
+    const char* vert_path, 
+    const char* frag_path, 
+    const char* tessel_control_path, 
+    const char* tessel_eval_path
+) {
+    std::string vert_code = this->read_shader_code(vert_path);
+    std::string frag_code = this->read_shader_code(frag_path);
 
-    vert_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    frag_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    unsigned int vert = this->create_shader(vert_code.c_str(), "VERTEX");
+    unsigned int frag = this->create_shader(frag_code.c_str(), "FRAGMENT");
+    std::optional<unsigned int> tessc = std::nullopt;
+    std::optional<unsigned int> tesse = std::nullopt;
 
     try {
-        std::stringstream vert_shader_stream;
+        std::string tessel_control_code, tessel_eval_code;
 
-        vert_shader_file.open(vert_path);
-        vert_shader_stream << vert_shader_file.rdbuf();
-        vert_shader_file.close();
+        if (tessel_control_path != nullptr && tessel_eval_path == nullptr) {
+            throw "Tessellation Control Shader must be followed by Tessellation Evaluation Shader.";
+        } else if (tessel_control_path == nullptr && tessel_eval_path != nullptr) {
+            throw "Tessellation Evaluation Shader must be preceded by Tessllation Control Shader.";
+        } 
+        
+        if (tessel_control_path != nullptr && tessel_eval_path != nullptr) {
+            tessel_control_code = this->read_shader_code(tessel_control_path);
+            tessel_eval_code = this->read_shader_code(tessel_eval_path);
 
-        vert_code = vert_shader_stream.str();
-    } catch (std::ifstream::failure& err) {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ::" << err.what() << std::endl;
+            tessc = this->create_shader(tessel_control_code.c_str(), "TESS CONTROL");
+            tesse = this->create_shader(tessel_eval_code.c_str(), "TESS EVALUATION");
+        }
+    } catch(std::string err) {
+        std::cout << "[ERR] " << err << std::endl;
     }
 
-    try {
-        std::stringstream frag_shader_stream;
-
-        frag_shader_file.open(frag_path);
-        frag_shader_stream << frag_shader_file.rdbuf();
-        frag_shader_file.close();
-
-        frag_code = frag_shader_stream.str();
-    } catch (std::ifstream::failure& err) {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ::" << err.what() << std::endl;
-    }  
-
-    unsigned int vert = this->create_vert_shader(vert_code.c_str());
-    unsigned int frag = this->create_frag_shader(frag_code.c_str());
-
-    this->ID = create_shader_program(vert, frag);
+    this->ID = create_shader_program(vert, frag, tessc, tesse);
 
     glDeleteShader(vert);
     glDeleteShader(frag);
 }
 
 /**
- * create a vertex shader
+ * @brief read shader code from the shader path provided
  * 
- * # Parameters
- * vert_shader_code vertex shader code
- * 
- * # Returns
- * vertex shader ID
+ * @param shader_path path to the shader file
+ * @return shader code
  */
-unsigned int Shader::create_vert_shader(const char* vert_shader_code) {
-    // std::cout << vert_shader_code << std::endl;
+std::string Shader::read_shader_code(const char* shader_path) {
+    std::string shader_code;
+    std::ifstream shader_file;
 
-    unsigned int vert = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vert, 1, &vert_shader_code, NULL);
-    glCompileShader(vert);
+    shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
-    check_compile_errors(vert, "VERTEX");
+    try {
+        std::stringstream shader_stream;
 
-    return vert;
+        shader_file.open(shader_path);
+        shader_stream << shader_file.rdbuf();
+        shader_file.close();
+
+        shader_code = shader_stream.str();
+    } catch (std::ifstream::failure& err) {
+        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ::" << err.what() << std::endl;
+    }
+
+    return shader_code;
 }
 
 /**
-* create a fragment shader
-* 
-* # Parameters
-* `frag_shader_code` -  fragment shader code
-* `fragment shader` - ID
-*/
-unsigned int Shader::create_frag_shader(const char* frag_shader_code) {
-    unsigned int frag = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(frag, 1, &frag_shader_code, NULL);
-    glCompileShader(frag);
+ * @brief Create a shader.
+ * 
+ * @param shader_code the shader code to create the shader.
+ * @param shader_type the type of the shader to create.
+ * @return a shader of the type specified.
+ */
+unsigned int Shader::create_shader(const char* shader_code, std::string shader_type) {
+    int type;
 
-    check_compile_errors(frag, "FRAGMENT");
+    if (shader_type == "VERTEX") {
+        type = GL_VERTEX_SHADER;
+    } else if (shader_type == "FRAGMENT") {
+        type = GL_FRAGMENT_SHADER;
+    } else if (shader_type == "TESS CONTROL") {
+        type = GL_TESS_CONTROL_SHADER;
+    } else if (shader_type == "TESS EVALUATION") {
+        type = GL_TESS_EVALUATION_SHADER;
+    } else {
+        type = 0;
+        std::cout << "[ERR] Shader type " << shader_type << " not found. Available types are: VERTEX, FRAGMENT, TESS CONTROL, TESS EVALUATION.";
+    }
 
-    return frag;
+    unsigned int shader = glCreateShader(type);
+    glShaderSource(shader, 1, &shader_code, NULL);
+    glCompileShader(shader);
+
+    check_compile_errors(shader, shader_type);
+
+    return shader;
 }
 
 /**
- * create a shader program
+ * @brief Creates a shader program.
  * 
- * # Parameters
- * `vert` - vertex shader ID
- * `frag` - fragment shader ID
- * 
- * # Returns
- * shader program ID
+ * @param vert vertex shader ID
+ * @param frag fragment shader ID
+ * @param tcs tesselation control shader ID. Defaults to `std::nullopt`
+ * @param tes tessellation evaluation shader ID. Defaults to `std::nullopt`
+ * @return shader program ID
  */
-unsigned int Shader::create_shader_program(unsigned int vert, unsigned int frag) {
-    unsigned int ID = glCreateProgram();
+unsigned int Shader::create_shader_program(
+    unsigned int vert, 
+    unsigned int frag,
+    std::optional<unsigned int> tessc,
+    std::optional<unsigned int> tesse
+) {
+    unsigned int ID = glCreateProgram();    // the program ID
+
     glAttachShader(ID, vert);
     glAttachShader(ID, frag);
+
+    if (tessc.has_value()) {
+        std::cout << "tessc: " << tessc.value() << std::endl;
+        glAttachShader(ID, tessc.value());
+    }
+
+    if (tesse.has_value()) {
+        std::cout << "tesse: " << tesse.value() << std::endl;
+        glAttachShader(ID, tesse.value());
+    }
+
     glLinkProgram(ID);
 
     check_compile_errors(ID, "PROGRAM");
