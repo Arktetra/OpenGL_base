@@ -16,6 +16,7 @@ build/window.obj: src/platform/window.cpp src/platform/./window.hpp \
  C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/c++config.h \
  C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/os_defines.h \
  C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/cpu_defines.h \
+ C:/msys64/mingw64/include/c++/13.2.0/pstl/pstl_config.h \
  C:/msys64/mingw64/include/c++/13.2.0/ostream \
  C:/msys64/mingw64/include/c++/13.2.0/ios \
  C:/msys64/mingw64/include/c++/13.2.0/iosfwd \
@@ -92,6 +93,7 @@ build/window.obj: src/platform/window.cpp src/platform/./window.hpp \
  C:/msys64/mingw64/include/c++/13.2.0/bits/utility.h \
  C:/msys64/mingw64/include/c++/13.2.0/debug/debug.h \
  C:/msys64/mingw64/include/c++/13.2.0/bits/predefined_ops.h \
+ C:/msys64/mingw64/include/c++/13.2.0/bit \
  C:/msys64/mingw64/include/c++/13.2.0/bits/refwrap.h \
  C:/msys64/mingw64/include/c++/13.2.0/bits/invoke.h \
  C:/msys64/mingw64/include/c++/13.2.0/bits/range_access.h \
@@ -100,6 +102,9 @@ build/window.obj: src/platform/window.cpp src/platform/./window.hpp \
  C:/msys64/mingw64/include/c++/13.2.0/ext/alloc_traits.h \
  C:/msys64/mingw64/include/c++/13.2.0/bits/alloc_traits.h \
  C:/msys64/mingw64/include/c++/13.2.0/bits/stl_construct.h \
+ C:/msys64/mingw64/include/c++/13.2.0/string_view \
+ C:/msys64/mingw64/include/c++/13.2.0/bits/functional_hash.h \
+ C:/msys64/mingw64/include/c++/13.2.0/bits/string_view.tcc \
  C:/msys64/mingw64/include/c++/13.2.0/ext/string_conversions.h \
  C:/msys64/mingw64/include/c++/13.2.0/cstdlib \
  C:/msys64/mingw64/include/stdlib.h \
@@ -111,8 +116,12 @@ build/window.obj: src/platform/window.cpp src/platform/./window.hpp \
  C:/msys64/mingw64/include/c++/13.2.0/cstdio \
  C:/msys64/mingw64/include/c++/13.2.0/cerrno \
  C:/msys64/mingw64/include/c++/13.2.0/bits/charconv.h \
- C:/msys64/mingw64/include/c++/13.2.0/bits/functional_hash.h \
  C:/msys64/mingw64/include/c++/13.2.0/bits/basic_string.tcc \
+ C:/msys64/mingw64/include/c++/13.2.0/bits/memory_resource.h \
+ C:/msys64/mingw64/include/c++/13.2.0/cstddef \
+ C:/msys64/mingw64/include/c++/13.2.0/bits/uses_allocator.h \
+ C:/msys64/mingw64/include/c++/13.2.0/bits/uses_allocator_args.h \
+ C:/msys64/mingw64/include/c++/13.2.0/tuple \
  C:/msys64/mingw64/include/c++/13.2.0/bits/locale_classes.tcc \
  C:/msys64/mingw64/include/c++/13.2.0/system_error \
  C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/error_constants.h \
@@ -136,17 +145,29 @@ build/window.obj: src/platform/window.cpp src/platform/./window.hpp \
  src/platform/./../includes/glm/detail/_fixes.hpp \
  C:/msys64/mingw64/include/c++/13.2.0/cmath \
  C:/msys64/mingw64/include/math.h \
+ C:/msys64/mingw64/include/c++/13.2.0/bits/specfun.h \
+ C:/msys64/mingw64/include/c++/13.2.0/limits \
+ C:/msys64/mingw64/include/c++/13.2.0/tr1/gamma.tcc \
+ C:/msys64/mingw64/include/c++/13.2.0/tr1/special_function_util.h \
+ C:/msys64/mingw64/include/c++/13.2.0/tr1/bessel_function.tcc \
+ C:/msys64/mingw64/include/c++/13.2.0/tr1/beta_function.tcc \
+ C:/msys64/mingw64/include/c++/13.2.0/tr1/ell_integral.tcc \
+ C:/msys64/mingw64/include/c++/13.2.0/tr1/exp_integral.tcc \
+ C:/msys64/mingw64/include/c++/13.2.0/tr1/hypergeometric.tcc \
+ C:/msys64/mingw64/include/c++/13.2.0/tr1/legendre_function.tcc \
+ C:/msys64/mingw64/include/c++/13.2.0/tr1/modified_bessel_func.tcc \
+ C:/msys64/mingw64/include/c++/13.2.0/tr1/poly_hermite.tcc \
+ C:/msys64/mingw64/include/c++/13.2.0/tr1/poly_laguerre.tcc \
+ C:/msys64/mingw64/include/c++/13.2.0/tr1/riemann_zeta.tcc \
  C:/msys64/mingw64/include/c++/13.2.0/climits \
  C:/msys64/mingw64/include/c++/13.2.0/cfloat \
  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/float.h \
  C:/msys64/mingw64/include/float.h \
- C:/msys64/mingw64/include/c++/13.2.0/limits \
  C:/msys64/mingw64/include/c++/13.2.0/cassert \
  C:/msys64/mingw64/include/assert.h \
  src/platform/./../includes/glm/fwd.hpp \
  src/platform/./../includes/glm/detail/type_int.hpp \
  src/platform/./../includes/glm/detail/setup.hpp \
- C:/msys64/mingw64/include/c++/13.2.0/cstddef \
  src/platform/./../includes/glm/detail/../simd/platform.h \
  C:/msys64/mingw64/include/intrin.h C:/msys64/mingw64/include/setjmp.h \
  C:/msys64/mingw64/include/psdk_inc/intrin-impl.h \
@@ -334,7 +355,11 @@ build/window.obj: src/platform/window.cpp src/platform/./window.hpp \
  src/platform/./../includes/glm/detail/func_integer.hpp \
  src/platform/./../includes/glm/detail/func_integer.inl \
  src/platform/./../includes/glm/detail/func_integer_simd.inl \
- src/platform/./../includes/glm/detail/../simd/integer.h
+ src/platform/./../includes/glm/detail/../simd/integer.h \
+ src/platform/./../includes/glm/gtc/matrix_transform.hpp \
+ src/platform/./../includes/glm/gtc/../gtc/constants.hpp \
+ src/platform/./../includes/glm/gtc/../gtc/constants.inl \
+ src/platform/./../includes/glm/gtc/matrix_transform.inl
 src/platform/./window.hpp:
 src/platform/././utils.hpp:
 src/platform/././../includes/GLAD/glad.h:
@@ -356,6 +381,7 @@ C:/msys64/mingw64/include/c++/13.2.0/bits/requires_hosted.h:
 C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/c++config.h:
 C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/os_defines.h:
 C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/cpu_defines.h:
+C:/msys64/mingw64/include/c++/13.2.0/pstl/pstl_config.h:
 C:/msys64/mingw64/include/c++/13.2.0/ostream:
 C:/msys64/mingw64/include/c++/13.2.0/ios:
 C:/msys64/mingw64/include/c++/13.2.0/iosfwd:
@@ -436,6 +462,7 @@ C:/msys64/mingw64/include/c++/13.2.0/bits/stl_pair.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/utility.h:
 C:/msys64/mingw64/include/c++/13.2.0/debug/debug.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/predefined_ops.h:
+C:/msys64/mingw64/include/c++/13.2.0/bit:
 C:/msys64/mingw64/include/c++/13.2.0/bits/refwrap.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/invoke.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/range_access.h:
@@ -444,6 +471,9 @@ C:/msys64/mingw64/include/c++/13.2.0/bits/basic_string.h:
 C:/msys64/mingw64/include/c++/13.2.0/ext/alloc_traits.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/alloc_traits.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/stl_construct.h:
+C:/msys64/mingw64/include/c++/13.2.0/string_view:
+C:/msys64/mingw64/include/c++/13.2.0/bits/functional_hash.h:
+C:/msys64/mingw64/include/c++/13.2.0/bits/string_view.tcc:
 C:/msys64/mingw64/include/c++/13.2.0/ext/string_conversions.h:
 C:/msys64/mingw64/include/c++/13.2.0/cstdlib:
 C:/msys64/mingw64/include/stdlib.h:
@@ -455,8 +485,12 @@ C:/msys64/mingw64/include/c++/13.2.0/bits/std_abs.h:
 C:/msys64/mingw64/include/c++/13.2.0/cstdio:
 C:/msys64/mingw64/include/c++/13.2.0/cerrno:
 C:/msys64/mingw64/include/c++/13.2.0/bits/charconv.h:
-C:/msys64/mingw64/include/c++/13.2.0/bits/functional_hash.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/basic_string.tcc:
+C:/msys64/mingw64/include/c++/13.2.0/bits/memory_resource.h:
+C:/msys64/mingw64/include/c++/13.2.0/cstddef:
+C:/msys64/mingw64/include/c++/13.2.0/bits/uses_allocator.h:
+C:/msys64/mingw64/include/c++/13.2.0/bits/uses_allocator_args.h:
+C:/msys64/mingw64/include/c++/13.2.0/tuple:
 C:/msys64/mingw64/include/c++/13.2.0/bits/locale_classes.tcc:
 C:/msys64/mingw64/include/c++/13.2.0/system_error:
 C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/error_constants.h:
@@ -481,17 +515,29 @@ src/platform/./../includes/glm/glm.hpp:
 src/platform/./../includes/glm/detail/_fixes.hpp:
 C:/msys64/mingw64/include/c++/13.2.0/cmath:
 C:/msys64/mingw64/include/math.h:
+C:/msys64/mingw64/include/c++/13.2.0/bits/specfun.h:
+C:/msys64/mingw64/include/c++/13.2.0/limits:
+C:/msys64/mingw64/include/c++/13.2.0/tr1/gamma.tcc:
+C:/msys64/mingw64/include/c++/13.2.0/tr1/special_function_util.h:
+C:/msys64/mingw64/include/c++/13.2.0/tr1/bessel_function.tcc:
+C:/msys64/mingw64/include/c++/13.2.0/tr1/beta_function.tcc:
+C:/msys64/mingw64/include/c++/13.2.0/tr1/ell_integral.tcc:
+C:/msys64/mingw64/include/c++/13.2.0/tr1/exp_integral.tcc:
+C:/msys64/mingw64/include/c++/13.2.0/tr1/hypergeometric.tcc:
+C:/msys64/mingw64/include/c++/13.2.0/tr1/legendre_function.tcc:
+C:/msys64/mingw64/include/c++/13.2.0/tr1/modified_bessel_func.tcc:
+C:/msys64/mingw64/include/c++/13.2.0/tr1/poly_hermite.tcc:
+C:/msys64/mingw64/include/c++/13.2.0/tr1/poly_laguerre.tcc:
+C:/msys64/mingw64/include/c++/13.2.0/tr1/riemann_zeta.tcc:
 C:/msys64/mingw64/include/c++/13.2.0/climits:
 C:/msys64/mingw64/include/c++/13.2.0/cfloat:
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/float.h:
 C:/msys64/mingw64/include/float.h:
-C:/msys64/mingw64/include/c++/13.2.0/limits:
 C:/msys64/mingw64/include/c++/13.2.0/cassert:
 C:/msys64/mingw64/include/assert.h:
 src/platform/./../includes/glm/fwd.hpp:
 src/platform/./../includes/glm/detail/type_int.hpp:
 src/platform/./../includes/glm/detail/setup.hpp:
-C:/msys64/mingw64/include/c++/13.2.0/cstddef:
 src/platform/./../includes/glm/detail/../simd/platform.h:
 C:/msys64/mingw64/include/intrin.h:
 C:/msys64/mingw64/include/setjmp.h:
@@ -681,3 +727,7 @@ src/platform/./../includes/glm/detail/func_integer.hpp:
 src/platform/./../includes/glm/detail/func_integer.inl:
 src/platform/./../includes/glm/detail/func_integer_simd.inl:
 src/platform/./../includes/glm/detail/../simd/integer.h:
+src/platform/./../includes/glm/gtc/matrix_transform.hpp:
+src/platform/./../includes/glm/gtc/../gtc/constants.hpp:
+src/platform/./../includes/glm/gtc/../gtc/constants.inl:
+src/platform/./../includes/glm/gtc/matrix_transform.inl:

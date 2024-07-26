@@ -15,6 +15,7 @@ build/buffer.obj: src/platform/buffer.cpp src/platform/./buffer.hpp \
  C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/c++config.h \
  C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/os_defines.h \
  C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/cpu_defines.h \
+ C:/msys64/mingw64/include/c++/13.2.0/pstl/pstl_config.h \
  C:/msys64/mingw64/include/c++/13.2.0/bits/stl_algobase.h \
  C:/msys64/mingw64/include/c++/13.2.0/bits/functexcept.h \
  C:/msys64/mingw64/include/c++/13.2.0/bits/exception_defines.h \
@@ -33,6 +34,7 @@ build/buffer.obj: src/platform/buffer.cpp src/platform/./buffer.hpp \
  C:/msys64/mingw64/include/c++/13.2.0/bits/ptr_traits.h \
  C:/msys64/mingw64/include/c++/13.2.0/debug/debug.h \
  C:/msys64/mingw64/include/c++/13.2.0/bits/predefined_ops.h \
+ C:/msys64/mingw64/include/c++/13.2.0/bit \
  C:/msys64/mingw64/include/c++/13.2.0/bits/allocator.h \
  C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/c++allocator.h \
  C:/msys64/mingw64/include/c++/13.2.0/bits/new_allocator.h \
@@ -53,7 +55,12 @@ build/buffer.obj: src/platform/buffer.cpp src/platform/./buffer.hpp \
  C:/msys64/mingw64/include/c++/13.2.0/bits/stl_function.h \
  C:/msys64/mingw64/include/c++/13.2.0/backward/binders.h \
  C:/msys64/mingw64/include/c++/13.2.0/bits/range_access.h \
- C:/msys64/mingw64/include/c++/13.2.0/bits/vector.tcc
+ C:/msys64/mingw64/include/c++/13.2.0/bits/vector.tcc \
+ C:/msys64/mingw64/include/c++/13.2.0/bits/memory_resource.h \
+ C:/msys64/mingw64/include/c++/13.2.0/cstddef \
+ C:/msys64/mingw64/include/c++/13.2.0/bits/uses_allocator.h \
+ C:/msys64/mingw64/include/c++/13.2.0/bits/uses_allocator_args.h \
+ C:/msys64/mingw64/include/c++/13.2.0/tuple
 src/platform/./buffer.hpp:
 src/platform/./../includes/GLAD/glad.h:
 src/platform/./../includes/GLAD/../KHR/khrplatform.h:
@@ -73,6 +80,7 @@ C:/msys64/mingw64/include/c++/13.2.0/bits/requires_hosted.h:
 C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/c++config.h:
 C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/os_defines.h:
 C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/cpu_defines.h:
+C:/msys64/mingw64/include/c++/13.2.0/pstl/pstl_config.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/stl_algobase.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/functexcept.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/exception_defines.h:
@@ -91,6 +99,7 @@ C:/msys64/mingw64/include/c++/13.2.0/bits/stl_iterator.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/ptr_traits.h:
 C:/msys64/mingw64/include/c++/13.2.0/debug/debug.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/predefined_ops.h:
+C:/msys64/mingw64/include/c++/13.2.0/bit:
 C:/msys64/mingw64/include/c++/13.2.0/bits/allocator.h:
 C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32/bits/c++allocator.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/new_allocator.h:
@@ -112,3 +121,8 @@ C:/msys64/mingw64/include/c++/13.2.0/bits/stl_function.h:
 C:/msys64/mingw64/include/c++/13.2.0/backward/binders.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/range_access.h:
 C:/msys64/mingw64/include/c++/13.2.0/bits/vector.tcc:
+C:/msys64/mingw64/include/c++/13.2.0/bits/memory_resource.h:
+C:/msys64/mingw64/include/c++/13.2.0/cstddef:
+C:/msys64/mingw64/include/c++/13.2.0/bits/uses_allocator.h:
+C:/msys64/mingw64/include/c++/13.2.0/bits/uses_allocator_args.h:
+C:/msys64/mingw64/include/c++/13.2.0/tuple:
