@@ -1,5 +1,5 @@
-#ifndef UTILS_HPP
-#define UTILS_HPP
+#ifndef PLATFORM_UTILS_HPP
+#define PLATFORM_UTILS_HPP
 
 #include "../includes/GLAD/glad.h"
 #include "../includes/GLFW/glfw3.h"
