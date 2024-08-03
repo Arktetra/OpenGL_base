@@ -14,6 +14,10 @@
 #include "platform/buffer.hpp"
 #include "platform/texture.hpp"
 #include "platform/camera.hpp"
+#include "perm.hpp"
+// #include "triangles.hpp"
+#include "terrain.hpp"
+#include "texture_generator.hpp"
 
 void process_input(Window window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -30,7 +34,7 @@ int display_grayscale = 0;
 // Camera camera = Camera({});
 
 Camera camera = Camera({
-    .pos = glm::vec3(67.0f, 627.5f, 169.9f), 
+    .pos = glm::vec3(67.0f, 300.f, 169.9f), 
     .up = glm::vec3(0.0f, 1.0f, 0.0f),
     .yaw = -128.1f,
     .pitch = -42.4f,
@@ -55,163 +59,76 @@ int main() {
 
     ProcGen::init();
 
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-
-    ImGui_ImplGlfw_InitForOpenGL(window.ptr, true);
-    ImGui_ImplOpenGL3_Init();
-
-    GLint max_tess_level;
-    glGetIntegerv(GL_MAX_TESS_GEN_LEVEL, &max_tess_level);
-    std::cout << "[INFO] max available tess level: " << max_tess_level << std::endl;
-
-    glEnable(GL_DEPTH_TEST);
-
-    Shader tessHeightMapShader(
-        "src/shaders/height.vert", 
-        "src/shaders/height.frag",
-        "src/shaders/height.tesc", 
-        "src/shaders/height.tese"
+    Shader triangles_shader(
+        "src/shaders/terrain.vert",
+        "src/shaders/terrain.frag"
     );
 
+    Terrain::FaultFormation terrain(800, 100, 0, 255);
 
-    // load and create a texture
-    // -------------------------
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
-    int width, height, nrChannels;
-    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char *data = stbi_load("assets/height_maps/iceland.png", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        GLint id;
-        glGetIntegerv(GL_ACTIVE_TEXTURE, &id);
-        // std::cout << "uniform height_map location:" <<  glGetUniformLocation(tessHeightMapShader.ID, "height_map") << std::endl;
-        std::cout << "uniform height_map location:" <<  glGetUniformLocation(tessHeightMapShader.get_id(), "height_map") << std::endl;
-        std::cout << "current active texture: " << id << std::endl;
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+    std::vector<const char*> paths = {
+        "assets/imgs/sand.jpg",
+        "assets/imgs/grass_land.jpg",
+        "assets/imgs/snow.jpg"
+    };
 
-        // tessHeightMapShader.setInt("heightMap", 0);
-        tessHeightMapShader.set_int("heightMap", 0);
+    TexturePack textures(paths);
 
-        std::cout << "Loaded heightmap of size " << height << " x " << width << std::endl;
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
+    // Texture texture0("assets/imgs/sand.jpg");
+    // Texture texture1("assets/imgs/grass_land.jpg");
+    // Texture texture2("assets/imgs/snow.jpg");
 
-    std::vector<float> vertices;
+    // std::cout << texture0.get_id() << texture1.get_id() << std::endl;
 
-    unsigned int rez = 20;
-    for (unsigned int i = 0; i <= rez - 1; i++) {
-        for (unsigned int j = 0; j <= rez - 1; j++) {
-            vertices.push_back(-width / 2.0 + width * i / (float)rez);
-            vertices.push_back(0.0);
-            vertices.push_back(-height / 2.0 + height * j / (float)rez);
-            vertices.push_back(i / (float)rez);
-            vertices.push_back(j / (float)rez);
+    triangles_shader.use();
+    triangles_shader.set_int("texture0", 0);
+    triangles_shader.set_int("texture1", 1);
+    triangles_shader.set_int("texture2", 2);
 
-            vertices.push_back(-width / 2.0 + width * (i + 1) / (float)rez);
-            vertices.push_back(0.0);
-            vertices.push_back(-height / 2.0 + height * j / (float)rez);
-            vertices.push_back((i + 1) / (float)rez);
-            vertices.push_back(j / (float)rez);
+    // std::cout << GL_TEXTURE0 << " " << GL_TEXTURE1 << std::endl;
 
-            vertices.push_back(-width / 2.0 + width * i / (float)rez);
-            vertices.push_back(0.0);
-            vertices.push_back(-height / 2.0 + height * (j + 1) / (float)rez);
-            vertices.push_back(i / (float)rez);
-            vertices.push_back((j + 1) / (float)rez);
-            
-            vertices.push_back(-width / 2.0 + width * (i + 1) / (float)rez);
-            vertices.push_back(0.0);
-            vertices.push_back(-height / 2.0 + height * (j + 1) / (float)rez);
-            vertices.push_back((i + 1) / (float)rez);
-            vertices.push_back((j + 1) / (float)rez);
-        }
-    }
-    std::cout << "[INFO] loaded " << rez * rez << " patches of 4 control points each" << std::endl;
-    std::cout << "[INFO] processing " << rez * rez * 4 << " vertices in vertex shader" << std::endl;
+    // return 0;
 
-    std::vector<int> indices;
+    
 
-    for (int i = 0; i < height - 1; i++) {
-        for (int j = 0; j < width; j++) {
-            for (int k = 0; k < 2; k++) {
-                indices.push_back(j + width * (i + k));
-            }
-        }
-    }
-
-    // Buffer terrain(vertices, indices, GL_STATIC_DRAW);
-    Buffer terrain(vertices, GL_STATIC_DRAW);
-    ProcGen::config_vertex_attribute(0, 3, 5 * sizeof(float), (void*)0);
-    ProcGen::config_vertex_attribute(1, 2, 5 * sizeof(float), (void*)(sizeof(float) * 3));
-
-    glPatchParameteri(GL_PATCH_VERTICES, 4);
-
-    std::cout << "[INFO] window loop entered." << std::endl;
 
     while (!window.is_close()) {
         process_input(window);
-
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-        // ImGui::ShowDemoWindow();
 
         float current_frame = static_cast<float>(glfwGetTime());
 
         delta_time = current_frame - last_frame;
         last_frame = current_frame;
 
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClearColor(0.1, 0.1, 0.1, 0.1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        tessHeightMapShader.use();
+        triangles_shader.use();
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.get_zoom()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100000.0f);
         glm::mat4 view = camera.get_view_matrix();
-        tessHeightMapShader.set_mat4("projection", projection);
-        tessHeightMapShader.set_mat4("view", view);
+        triangles_shader.set_mat4("projection", projection);
+        triangles_shader.set_mat4("view", view);
 
         glm::mat4 model = glm::mat4(1.0f);
 
-        tessHeightMapShader.set_mat4("model", model);
+        triangles_shader.set_mat4("model", model);
 
-        terrain.bind();
+        // glActiveTexture(GL_TEXTURE0);
+        // texture0.bind();
+        // glActiveTexture(GL_TEXTURE1);
+        // texture1.bind();
+        // glActiveTexture(GL_TEXTURE2);
+        // texture2.bind();
+
+        textures.bind();
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawArrays(GL_PATCHES, 0, rez * rez * 4);
-
-        tool_bar();
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        terrain.render();
 
         glfwSwapBuffers(window.ptr);
         glfwPollEvents();
     }
-    // height_map_shader.remove();
-
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
 
     glfwTerminate();
     return 0;
