@@ -14,7 +14,6 @@ class Triangles {
 
     public:
         Triangles() {}
-        // Triangles(int width, int depth, std::vector<float> heightmap);
         Triangles(int width, int depth, ProcGen::HeightMap height_map);
         ~Triangles();
         void render();

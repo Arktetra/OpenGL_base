@@ -14,6 +14,8 @@ Triangles::Triangles(int width, int depth, ProcGen::HeightMap height_map) {
             // vertices.push_back(height_map[(z + depth / 2) * depth + (x + width / 2)]);
             vertices.push_back(height_map.get_value(x + width / 2, z + depth / 2));
             vertices.push_back(z);
+            vertices.push_back(x / width);
+            vertices.push_back(z / depth);
         }
     }
 
@@ -40,7 +42,8 @@ Triangles::Triangles(int width, int depth, ProcGen::HeightMap height_map) {
 
     std::cout << "[INFO] created a mesh with VAO: " << this->triangle_VAO << std::endl;
 
-    ProcGen::config_vertex_attribute(0, 3, 3 * sizeof(float), (void*)0);
+    ProcGen::config_vertex_attribute(0, 3, 5 * sizeof(float), (void*)0);
+    ProcGen::config_vertex_attribute(1, 2, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 }
 
 void Triangles::render() {
