@@ -128,12 +128,10 @@ unsigned int Shader::create_shader_program(
     glAttachShader(ID, frag);
 
     if (tessc.has_value()) {
-        std::cout << "tessc: " << tessc.value() << std::endl;
         glAttachShader(ID, tessc.value());
     }
 
     if (tesse.has_value()) {
-        std::cout << "tesse: " << tesse.value() << std::endl;
         glAttachShader(ID, tesse.value());
     }
 

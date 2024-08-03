@@ -4,8 +4,8 @@
 #include "../includes/stb_image.h"
 
 Texture::Texture(const char* texture_path) {
-    glGenTextures(1, &this->texture);
-    glBindTexture(GL_TEXTURE_2D, this->texture);
+    glGenTextures(1, &this->id);
+    glBindTexture(GL_TEXTURE_2D, this->id);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -26,5 +26,9 @@ Texture::Texture(const char* texture_path) {
 }
 
 void Texture::bind() {
-    glBindTexture(GL_TEXTURE_2D, this->texture);
+    glBindTexture(GL_TEXTURE_2D, this->id);
+}
+
+unsigned Texture::get_id() {
+    return id;
 }

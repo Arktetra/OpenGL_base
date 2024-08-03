@@ -6,11 +6,13 @@
 #include <iostream>
 
 class Texture {
-    unsigned int texture;
+    unsigned int id;
 
     public:
+    Texture() {}
     Texture(const char* texture_path);
     void bind();
+    unsigned get_id();
 };
 
 #endif
