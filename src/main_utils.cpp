@@ -31,6 +31,13 @@ ProcGen::Point ProcGen::Point::random(int range) {
     return ProcGen::Point(x, z);
 }
 
+ProcGen::Point ProcGen::Point::random(int x_range, int z_range) {
+    int x = rand() % x_range;
+    int z = rand() % z_range;
+
+    return ProcGen::Point(x, z);
+}
+
 // ----------------------------------------------------------
 
 void ProcGen::HeightMap::init_height_map() {
@@ -83,12 +90,24 @@ void ProcGen::HeightMap::normalize(float min_height, float max_height) {
     float min = *std::min_element(values.begin(), values.end());
     float max = *std::max_element(values.begin(), values.end());
 
-    if (max <= min) { return; }
+    if (max <= min) { 
+        std::cout << "[INFO] cannot normalize" << std::endl;
+        return;
+    }
 
     float curr_delta_height = max - min;
     float new_delta_height = max_height - min_height;
 
     for (int i = 0; i < width * depth; i++) {
         this->values[i] = (this->values[i] - min) / curr_delta_height * new_delta_height;
+    }
+}
+
+void ProcGen::HeightMap::print(int range) {
+    for (int z = 0; z < range; z++) {
+        for (int x = 0; x < range; x++) {
+            std::cout << get_value(x, z) << " ";
+        }
+        std::cout << std::endl;
     }
 }

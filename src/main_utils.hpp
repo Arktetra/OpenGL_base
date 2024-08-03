@@ -16,6 +16,7 @@ namespace ProcGen {
 
         static Point random();
         static Point random(int range);
+        static Point random(int x_range, int z_range);
     };
 
     class HeightMap {
@@ -35,6 +36,7 @@ namespace ProcGen {
             void set_value(int x, int z, float value);
             void set_value(Point p, float value);
             void normalize(float min_height, float max_height);
+            void print(int range = 10);
     };
 }
 
