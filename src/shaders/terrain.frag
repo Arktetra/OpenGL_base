@@ -9,7 +9,7 @@ uniform sampler2D texture1;
 uniform sampler2D texture2;
 
 uniform float height_0 = 64.0;
-uniform float height_1 = 160.0;
+uniform float height_1 = 128.0;
 uniform float height_2 = 256.0;
 
 vec4 calc_texture_color();
@@ -24,7 +24,7 @@ vec4 calc_texture_color() {
 	vec4 texture_color;
 
 	if (height < height_0) {
-		texture_color = texture(texture0, tex_coord);
+		texture_color = texture(texture0, tex_coord) * height / height_0;
 	} else if (height < height_1) {
 		vec4 color_0 = texture(texture0, tex_coord);
 		vec4 color_1 = texture(texture1, tex_coord);
