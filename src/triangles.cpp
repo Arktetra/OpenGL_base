@@ -3,9 +3,6 @@
 #include "platform/utils.hpp"
 
 Triangles::Triangles(int width, int depth, ProcGen::HeightMap height_map) {
-    this->width = width;
-    this->depth = depth;
-
     std::vector<float> vertices;
 
     for (int z = -depth / 2; z < depth / 2; z++) {
@@ -38,6 +35,8 @@ Triangles::Triangles(int width, int depth, ProcGen::HeightMap height_map) {
         }
     } 
 
+    this->num_indices = indices.size();
+
     this->triangle_VAO = Buffer::create_VAO(vertices, indices, GL_STATIC_DRAW);
 
     std::cout << "[INFO] created a mesh with VAO: " << this->triangle_VAO << std::endl;
@@ -46,11 +45,36 @@ Triangles::Triangles(int width, int depth, ProcGen::HeightMap height_map) {
     ProcGen::config_vertex_attribute(1, 2, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 }
 
+Triangles::Triangles(int width, int depth, float height) {
+
+    std::vector<float> vertices = {
+        -(float)width / 2,      height,    -(float) depth / 2,
+        -(float)width / 2,      height,     (float)depth / 2 - 1, 
+        (float)width / 2,       height,    -(float)depth / 2,
+        (float)width / 2 - 1,   height,     (float)depth / 2 - 1
+    };
+
+    std::vector<int> indices = {
+        0, 1, 2,
+        1, 2, 3
+    };
+
+    this->num_indices = indices.size();
+
+    this->triangle_VAO = Buffer::create_VAO(vertices, indices, GL_STATIC_DRAW);
+
+    std::cout << "[INFO] created a quad with VAO: " << this->triangle_VAO << std::endl;
+
+    ProcGen::config_vertex_attribute(0, 3, 3 * sizeof(float), (void*)0);
+}
+
 void Triangles::render() {
     Buffer::bind(triangle_VAO);
-    glDrawElements(GL_TRIANGLES, (depth - 1) * (width - 1) * 6, GL_UNSIGNED_INT, NULL);
+    glDrawElements(GL_TRIANGLES, this->num_indices, GL_UNSIGNED_INT, NULL);
 }
 
 Triangles::~Triangles() {
 
 }
+
+// -------------------------------------------------------------------------

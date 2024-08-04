@@ -6,9 +6,11 @@
 #include <algorithm>
 
 #include "platform/texture.hpp"
+#include "platform/camera.hpp"
 #include "triangles.hpp"
 #include "main_utils.hpp"
 #include "filters.hpp"
+#include "terrain_shader.hpp"
 
 namespace Terrain {
     class Base {
@@ -21,7 +23,8 @@ namespace Terrain {
 
         public:
             Base() {}
-            void render();
+            void prepare_render(Terrain::Shader shader, Camera camera, glm::mat4 projection);
+            void render(Terrain::Shader shader, Camera camera, glm::mat4 projection);
     };
 
 

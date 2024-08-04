@@ -8,7 +8,7 @@
  * @param tessel_control_path tessellation control shader path
  * @param tessel_eval_path tessellation evaluation shader path
  */
-Shader::Shader(
+OpenGLBase::Shader::Shader(
     const char* vert_path, 
     const char* frag_path, 
     const char* tessel_control_path, 
@@ -54,7 +54,7 @@ Shader::Shader(
  * @param shader_path path to the shader file
  * @return shader code
  */
-std::string Shader::read_shader_code(const char* shader_path) {
+std::string OpenGLBase::Shader::read_shader_code(const char* shader_path) {
     std::string shader_code;
     std::ifstream shader_file;
 
@@ -82,7 +82,7 @@ std::string Shader::read_shader_code(const char* shader_path) {
  * @param shader_type the type of the shader to create.
  * @return a shader of the type specified.
  */
-unsigned int Shader::create_shader(const char* shader_code, std::string shader_type) {
+unsigned int OpenGLBase::Shader::create_shader(const char* shader_code, std::string shader_type) {
     int type;
 
     if (shader_type == "VERTEX") {
@@ -116,7 +116,7 @@ unsigned int Shader::create_shader(const char* shader_code, std::string shader_t
  * @param tes tessellation evaluation shader ID. Defaults to `std::nullopt`
  * @return shader program ID
  */
-unsigned int Shader::create_shader_program(
+unsigned int OpenGLBase::Shader::create_shader_program(
     unsigned int vert, 
     unsigned int frag,
     std::optional<unsigned int> tessc,
@@ -139,6 +139,8 @@ unsigned int Shader::create_shader_program(
 
     check_compile_errors(ID, "PROGRAM");
 
+    std::cout << "[INFO] created a shader program with ID " << ID << std::endl;
+
     return ID;
 }
 
@@ -149,7 +151,7 @@ unsigned int Shader::create_shader_program(
  * `shader (unsigned int)`: the shader program
  * `type (std::string)`: should be "`"PROGRAM"`, `"VERTEX"` or `"FRAGMENT"`
  */
-void Shader::check_compile_errors(unsigned int shader, std::string type) {
+void OpenGLBase::Shader::check_compile_errors(unsigned int shader, std::string type) {
     
     int success;
     char info_log[1024];
@@ -169,42 +171,46 @@ void Shader::check_compile_errors(unsigned int shader, std::string type) {
     }
 }
 
-void Shader::use() {
+void OpenGLBase::Shader::use() {
     glUseProgram(this->ID);
 }
 
-unsigned int Shader::get_id() {
+unsigned int OpenGLBase::Shader::get_id() {
     return this->ID;
 }
 
-void Shader::remove() {
+void OpenGLBase::Shader::remove() {
     glDeleteProgram(this->ID);
 }
 
-void Shader::set_bool(const std::string &name, bool value) const {
+void OpenGLBase::Shader::set_bool(const std::string &name, bool value) const {
     glUniform1i(glGetUniformLocation(this->ID, name.c_str()), (int)value);
 }
 
-void Shader::set_int(const std::string &name, int value) const {
+void OpenGLBase::Shader::set_int(const std::string &name, int value) const {
     glUniform1i(glGetUniformLocation(this->ID, name.c_str()), value);
 }
 
-void Shader::set_uint(const std::string &name, int value) const {
+void OpenGLBase::Shader::set_uint(const std::string &name, int value) const {
     glUniform1ui(glGetUniformLocation(this->ID, name.c_str()), value);
 }
 
-void Shader::set_float(const std::string &name, float value) const {
+void OpenGLBase::Shader::set_float(const std::string &name, float value) const {
     glUniform1f(glGetUniformLocation(this->ID, name.c_str()), value);
 }
 
-void Shader::set_vec3(const std::string &name, glm::vec3 &value) const {
+void OpenGLBase::Shader::set_vec3(const std::string &name, glm::vec3 &value) const {
     glUniform3fv(glGetUniformLocation(this->ID, name.c_str()), 1, &value[0]);
 }
 
-void Shader::set_vec3(const std::string &name, float x, float y, float z) const {
+void OpenGLBase::Shader::set_vec3(const std::string &name, float x, float y, float z) const {
     glUniform3f(glGetUniformLocation(this->ID, name.c_str()), x, y, z);
 }
 
-void Shader::set_mat4(const std::string &name, glm::mat4 &mat) const {
+void OpenGLBase::Shader::set_vec4(const std::string &name, glm::vec4 &value) const {
+    glUniform4fv(glGetUniformLocation(this->ID, name.c_str()), 1, &value[0]);
+}
+
+void OpenGLBase::Shader::set_mat4(const std::string &name, glm::mat4 &mat) const {
     glUniformMatrix4fv(glGetUniformLocation(this->ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
 }

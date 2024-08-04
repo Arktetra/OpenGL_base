@@ -1,6 +1,14 @@
 #include "terrain.hpp"
 
-void Terrain::Base::render() {
+void Terrain::Base::prepare_render(Terrain::Shader shader, Camera camera, glm::mat4 projection) {
+    shader.use();
+    shader.load_projection_matrix(projection);
+    shader.load_view_matrix(camera.get_view_matrix());
+    shader.load_model_matrix(glm::mat4(1.0f));
+}
+
+void Terrain::Base::render(Terrain::Shader shader, Camera camera, glm::mat4 projection) {
+    prepare_render(shader, camera, projection);
     triangles.render();
 }
 
